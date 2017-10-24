@@ -33,11 +33,9 @@ import java.util.Random;
 
 /**
  * @description: * 飘心动画界面布局类
- *                  通过动画控制每个心形界面的显示
- *                  PathAnimator 控制显示路径
- *                  HeartView 单个心形界面
- * @author: Andruby
- * @time: 2016/12/17 10:23
+ * 通过动画控制每个心形界面的显示
+ * PathAnimator 控制显示路径
+ * HeartView 单个心形界面
  */
 public class HeartLayout extends RelativeLayout {
 
@@ -98,23 +96,26 @@ public class HeartLayout extends RelativeLayout {
         }
         removeAllViews();
     }
-    public void resourceLoad(){
+
+    public void resourceLoad() {
         mHearts = new Bitmap[drawableIds.length];
         mHeartsDrawable = new BitmapDrawable[drawableIds.length];
-        for (int i =0;i < drawableIds.length;i++){
+        for (int i = 0; i < drawableIds.length; i++) {
             mHearts[i] = BitmapFactory.decodeResource(getResources(), drawableIds[i]);
             mHeartsDrawable[i] = new BitmapDrawable(getResources(), mHearts[i]);
         }
     }
+
     private static int[] drawableIds = new int[]{R.drawable.heart0, R.drawable.heart1, R.drawable.heart2, R.drawable.heart3, R.drawable.heart4, R.drawable.heart5, R.drawable.heart6, R.drawable.heart7, R.drawable.heart8,};
     private Random mRandom = new Random();
     private static Drawable[] sDrawables;
     private Bitmap[] mHearts;
     private BitmapDrawable[] mHeartsDrawable;
+
     private void initHeartDrawable() {
         int size = drawableIds.length;
         sDrawables = new Drawable[size];
-        for (int i = 0 ; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             sDrawables[i] = getResources().getDrawable(drawableIds[i]);
         }
         resourceLoad();

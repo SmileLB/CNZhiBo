@@ -102,12 +102,15 @@ public class LiveListFragment extends BaseFragment implements SwipeRefreshLayout
 			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
 				if (0 == mLastClickTime || System.currentTimeMillis() - mLastClickTime > 1000) {
-					LiveInfo item = mVideoListViewAdapter.getItem(i);
-					if (item == null) {
-						Log.e(TAG, "live list item is null at icon_position:" + i);
-						return;
+					if(mVideoListViewAdapter.getCount()>i){
+						LiveInfo item = mVideoListViewAdapter.getItem(i);
+						if (item == null) {
+							Log.e(TAG, "live list item is null at icon_position:" + i);
+							return;
+						}
+						startLivePlay(item);
 					}
-					startLivePlay(item);
+
 				}
 				mLastClickTime = System.currentTimeMillis();
 
@@ -182,7 +185,7 @@ public class LiveListFragment extends BaseFragment implements SwipeRefreshLayout
 	 * @param item 视频数据
 	 */
 	private void startLivePlay(final LiveInfo item) {
-		LivePlayerActivity.invoke(getActivity(),item.playUrl);
+		LivePlayerActivity.invoke(getActivity(),item);
 	}
 
 	@Override
@@ -204,7 +207,7 @@ public class LiveListFragment extends BaseFragment implements SwipeRefreshLayout
 		}
 		mSwipeRefreshLayout.setRefreshing(false);
 		if (!mLiveListPresenter.isHasMore()) {
-			mListFootView.setLoadDone();
+			mVideoListView.removeFooterView(mListFootView);
 		}
 	}
 

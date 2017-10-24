@@ -15,7 +15,8 @@ public class LiveListRequest extends IRequest {
 	public LiveListRequest(int requestId, String userId , int pageIndex, int pageSize) {
 		mRequestId = requestId;
 //		mParams.put("action","liveList");
-		mParams.put("action","liveListTest");//测试加载更多
+//		mParams.put("action","liveListTest");//测试加载更多
+		mParams.put("action","liveList");
 		mParams.put("userId",userId);
 		mParams.put("pageIndex", pageIndex);
 		mParams.put("pageSize", pageSize);

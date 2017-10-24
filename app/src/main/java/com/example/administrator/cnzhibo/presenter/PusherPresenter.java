@@ -56,7 +56,7 @@ public class PusherPresenter extends IPusherPresenter implements ITXLivePushList
         mPusherView = baseView;
         mBeautyDialogFragment = new BeautyDialogFragment();
         mBeautyDialogFragment.setSeekBarListener(this);
-
+        mTXLivePusher = new TXLivePusher(mPusherView.getContext());
 
         mFilterDialogFragment = new FilterDialogFragment();
         mFilterDialogFragment.setFilterCallback(this);

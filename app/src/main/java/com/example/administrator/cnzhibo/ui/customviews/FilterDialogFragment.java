@@ -112,7 +112,7 @@ public class FilterDialogFragment extends DialogFragment {
     }
 
     public void setFilterCallback(FilterCallback callback) {
-            mFilterCallback = callback;
+        mFilterCallback = callback;
     }
 
     FilterCallback mFilterCallback;

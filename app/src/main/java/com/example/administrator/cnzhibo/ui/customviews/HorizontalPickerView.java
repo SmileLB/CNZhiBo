@@ -27,6 +27,7 @@ public class HorizontalPickerView extends android.widget.HorizontalScrollView {
     }
 
     private DataSetObserver observer;
+
     public void setAdapter(Adapter adapter) {
         if (this.adapter != null) {
             this.adapter.unregisterDataSetObserver(observer);
@@ -47,6 +48,7 @@ public class HorizontalPickerView extends android.widget.HorizontalScrollView {
     }
 
     private Adapter adapter;
+
     void initialize() {
         observer = new DataSetObserver() {
             @Override

@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!--<include
+        <include
             android:id="@+id/layout_live_pusher_info"
             layout="@layout/layout_live_pusher_info"
             android:layout_width="110dp"
@@ -31,16 +31,6 @@
             android:layout_marginTop="5dp"
             android:layout_toRightOf="@+id/layout_live_pusher_info"
             android:visibility="gone" />
-        <ImageView
-            android:id="@+id/iv_close"
-            android:layout_width="@dimen/live_btn_size"
-            android:layout_height="@dimen/live_btn_size"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/btn_close_selector"
-            android:layout_marginRight="10dp"
-            android:padding="@dimen/space_10"
-            android:layout_marginTop="@dimen/space_10"
-            android:onClick="onClick" />-->
 
         <RelativeLayout
             android:id="@+id/tool_bar"
@@ -48,6 +38,14 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_margin="15dp">
+
+            <Button
+                android:id="@+id/btn_message_input"
+                android:layout_width="@dimen/live_btn_size"
+                android:layout_height="@dimen/live_btn_size"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/icon_message"
+                android:onClick="onClick" />
 
             <Button
                 android:id="@+id/btn_close"
@@ -67,23 +65,24 @@
                 android:onClick="onClick" />
         </RelativeLayout>
 
-        <!--&lt;!&ndash;点赞动画&ndash;&gt;
+        <!--点赞动画-->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="15dp">
+            android:layout_below="@+id/rv_user_avatar"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
 
-            <com.andruby.live.ui.customviews.HeartLayout
+            <com.example.administrator.cnzhibo.ui.customviews.HeartLayout
                 android:id="@+id/heart_layout"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:focusable="true" />
-        </RelativeLayout>-->
+        </RelativeLayout>
 
-        <!--<ListView
+        <ListView
             android:id="@+id/im_msg_listview"
             android:layout_width="250dp"
             android:layout_height="150dp"
@@ -95,7 +94,7 @@
             android:scrollbarStyle="outsideOverlay"
             android:scrollbars="none"
             android:stackFromBottom="true"
-            android:transcriptMode="normal"/>-->
+            android:transcriptMode="normal"/>
     </RelativeLayout>
 
 

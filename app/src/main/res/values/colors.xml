@@ -155,4 +155,13 @@
     <color name="title_text_color">#da4644</color>
     <color name="rech_zhezhao">#70ffffff</color>
     <color name="product_img_bg_color">#f2f2f2</color>
+    <!--im消息颜色-->
+    <color name="live_im_name">#fc3f63</color>
+    <color name="live_im_content_follow">#ffffff</color>
+    <color name="live_im_heart">#2edcfe</color>
+    <color name="live_im_join">#b5b5b5</color>
+    <color name="live_im_gag_leave">#acfc37</color>
+    <color name="live_im_system">#fdf106</color>
+    <color name="live_im_gift_back">#34feee</color>
+    <color name="live_charm">#ff5a79</color>
 </resources>
