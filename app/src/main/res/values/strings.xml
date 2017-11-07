@@ -290,5 +290,8 @@
 
     <string name="msg_stop_watch">正在观看直播，是否退出观看？</string>
 
+    <string name="app_review">我的回看</string>
+    <string name="title_review_list">我的回放</string>
+
 
 </resources>
