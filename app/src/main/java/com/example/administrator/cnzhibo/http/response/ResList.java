@@ -13,17 +13,18 @@ import java.util.List;
  */
 public class ResList<T>  extends IDontObfuscate {
 
-	public int pageIndex;
-	public int pageSize;
+	public int currentPage;
+	public int totalCount;
+	public int totalPage;
 
 	public List<T> items;
 
 	@Override
 	public String toString() {
 		return "ResList{" +
-				"currentPage=" + pageIndex +
-				", totalRow=" + pageSize +
-				", totalPage="  +
+				"currentPage=" + currentPage +
+				", totalCount=" + totalCount +
+				", totalPage=" + totalPage +
 				", items=" + items +
 				'}';
 	}

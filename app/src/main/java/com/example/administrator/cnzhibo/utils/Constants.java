@@ -58,6 +58,7 @@ public class Constants {
     public static final int AVIMCMD_GIFT = 12;         // 礼物消息   12
     public static final int AVIMCMD_SHOW_INFO = 17;       // 显示消息  message ,color ,type （1 评论列中显示， 2 评论之上显示）
     public static final int AVIMCMD_DANMU = 19;       // 直播回调状态消息。
+    public static final int AVIMCMD_LIVE_END = 20;       // 直播结束
 
 
     public static final int LOCATION_PERMISSION_REQ_CODE = 1;

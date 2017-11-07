@@ -3,6 +3,7 @@ package com.example.administrator.cnzhibo.presenter.ipresenter;
 
 import com.example.administrator.cnzhibo.base.BasePresenter;
 import com.example.administrator.cnzhibo.base.BaseView;
+import com.example.administrator.cnzhibo.model.GiftWithUerInfo;
 import com.example.administrator.cnzhibo.model.SimpleUserInfo;
 import com.tencent.TIMMessage;
 
@@ -92,5 +93,28 @@ public abstract class IIMChatPresenter implements BasePresenter {
          * @param timMessage 发送的TIM消息
          */
         void onSendMsgResult(int code, TIMMessage timMessage);
+
+        /**
+         * 观众进入消息处理
+         * @param userInfo
+         */
+        void handleEnterLiveMsg(SimpleUserInfo userInfo);
+
+        /**
+         * 观众离开消息处理
+         * @param userInfo
+         */
+        void handleExitLiveMsg(SimpleUserInfo userInfo);
+        /**
+         * 直播结束
+         * @param userInfo
+         */
+        void handleLiveEnd(SimpleUserInfo userInfo);
+
+        /**
+         * 直播结束
+         * @param giftWithUerInfo
+         */
+        void handleGift(GiftWithUerInfo giftWithUerInfo);
     }
 }

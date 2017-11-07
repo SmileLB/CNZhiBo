@@ -5,7 +5,9 @@ import java.io.Serializable;
 
 /**
  * @description: 礼物详情
-
+ *
+ * @author: Andruby
+ * @time: 2016/11/4 14:12
  */
 public class GiftInfo implements Serializable {
     private String giftId;//礼物id

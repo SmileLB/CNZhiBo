@@ -14,6 +14,7 @@ public class UserInfo extends IDontObfuscate {
     public String userId;
     public String nickname;
     public String headPic;
+    public String headPicSmall;
     public String sigId;
     public String sdkAppId;
     public String sdkAccountType;

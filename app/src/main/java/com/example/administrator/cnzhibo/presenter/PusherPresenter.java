@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.administrator.cnzhibo.R;
 import com.example.administrator.cnzhibo.http.AsyncHttp;
+import com.example.administrator.cnzhibo.http.StopLiveRequest;
 import com.example.administrator.cnzhibo.http.request.CreateLiveRequest;
 import com.example.administrator.cnzhibo.http.request.RequestComm;
 import com.example.administrator.cnzhibo.http.response.CreateLiveResp;
@@ -33,6 +34,9 @@ import com.tencent.rtmp.ui.TXCloudVideoView;
  */
 
 public class PusherPresenter extends IPusherPresenter implements ITXLivePushListener, BeautyDialogFragment.SeekBarCallback,FilterDialogFragment.FilterCallback {
+
+    public static final int LIVE_STATUS_ONLINE = 1;
+    public static final int LIVE_STATUS_OFFLINE = 0;
 
     private IPusherView mPusherView;
     private TXLivePusher mTXLivePusher;
@@ -63,8 +67,8 @@ public class PusherPresenter extends IPusherPresenter implements ITXLivePushList
     }
 
     @Override
-    public void getPusherUrl(String userId, String groupId, String title, String coverPic, String nickName, String headPic, String location) {
-        final CreateLiveRequest req = new CreateLiveRequest(RequestComm.createLive, userId, groupId, title, coverPic, location, 0);
+    public void getPusherUrl(String userId, String groupId, String title, String coverPic, String nickName, String headPic, String location, boolean isRecord) {
+        final CreateLiveRequest req = new CreateLiveRequest(RequestComm.createLive, userId, groupId, title, coverPic, location, isRecord ? 1 : 0);
         AsyncHttp.instance().postJson(req, new AsyncHttp.IHttpListener() {
             @Override
             public void onStart(int requestId) {
@@ -76,16 +80,17 @@ public class PusherPresenter extends IPusherPresenter implements ITXLivePushList
                 if (response.status == RequestComm.SUCCESS) {
                     CreateLiveResp resp = (CreateLiveResp) response.data;
                     if (resp != null) {
-                        if (!TextUtils.isEmpty(resp.getPushUrl())) {
-                            mPusherView.onGetPushUrl(resp.getPushUrl(), 0);
+                        if (!TextUtils.isEmpty(resp.pushUrl)) {
+                            mPusherView.onGetPushUrl(resp.liveId, resp.pushUrl, 0);
                         } else {
-                            mPusherView.onGetPushUrl(null, 1);
+                            mPusherView.onGetPushUrl(null, null, 1);
                         }
                     } else {
-                        mPusherView.onGetPushUrl(null, 1);
+                        mPusherView.onGetPushUrl(null, null, 1);
                     }
                 } else {
-                    mPusherView.onGetPushUrl(null, 1);
+                    mPusherView.showMsg(response.msg);
+                    mPusherView.finish();
                 }
             }
 
@@ -108,6 +113,11 @@ public class PusherPresenter extends IPusherPresenter implements ITXLivePushList
         mTXLivePusher.setPushListener(this);
         mTXLivePusher.startPusher(pushUrl);
 
+
+    }
+
+    @Override
+    public void setConfig(TXLivePushConfig pusherConfig) {
 
     }
 
@@ -207,6 +217,32 @@ public class PusherPresenter extends IPusherPresenter implements ITXLivePushList
     }
 
     @Override
+    public void changeLiveStatus(String userId, int status) {
+
+    }
+
+    @Override
+    public void stopLive(String userId, String groupId) {
+        StopLiveRequest stopLiveRequest = new StopLiveRequest(RequestComm.stopLive, userId, groupId);
+        AsyncHttp.instance().postJson(stopLiveRequest, new AsyncHttp.IHttpListener() {
+            @Override
+            public void onStart(int requestId) {
+
+            }
+
+            @Override
+            public void onSuccess(int requestId, Response response) {
+
+            }
+
+            @Override
+            public void onFailure(int requestId, int httpStatus, Throwable error) {
+
+            }
+        });
+    }
+
+    @Override
     public void start() {
 
     }
@@ -217,13 +253,15 @@ public class PusherPresenter extends IPusherPresenter implements ITXLivePushList
     }
 
     @Override
-    public void onPushEvent(int i, Bundle bundle) {
+    public void onPushEvent(int event, Bundle bundle) {
         //推流相关的事件
+        mPusherView.onPushEvent(event, bundle);
     }
 
     @Override
     public void onNetStatus(Bundle bundle) {
-//网络变化后的回调
+        //网络变化后的回调
+        mPusherView.onNetStatus(bundle);
     }
 
     @Override

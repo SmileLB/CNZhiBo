@@ -6,13 +6,13 @@ package com.example.administrator.cnzhibo.model;
  */
 public class SimpleUserInfo {
 
-    public String userid;
+    public String userId;
     public String nickname;
-    public String headpic;
+    public String headPic;
 
     public SimpleUserInfo(String userId, String nickname, String headpic) {
-        this.userid = userId;
+        this.userId = userId;
         this.nickname = nickname;
-        this.headpic = headpic;
+        this.headPic = headpic;
     }
 }

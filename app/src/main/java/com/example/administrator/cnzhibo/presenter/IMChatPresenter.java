@@ -4,17 +4,21 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.administrator.cnzhibo.logic.IMLogin;
+import com.example.administrator.cnzhibo.model.GiftWithUerInfo;
 import com.example.administrator.cnzhibo.model.SimpleUserInfo;
 import com.example.administrator.cnzhibo.presenter.ipresenter.IIMChatPresenter;
 import com.example.administrator.cnzhibo.utils.AsimpleCache.ACache;
 import com.example.administrator.cnzhibo.utils.Constants;
 import com.example.administrator.cnzhibo.utils.LogUtil;
+import com.google.gson.Gson;
 import com.tencent.TIMCallBack;
 import com.tencent.TIMConversation;
 import com.tencent.TIMConversationType;
 import com.tencent.TIMElem;
 import com.tencent.TIMElemType;
 import com.tencent.TIMGroupManager;
+import com.tencent.TIMGroupSystemElem;
+import com.tencent.TIMGroupSystemElemType;
 import com.tencent.TIMManager;
 import com.tencent.TIMMessage;
 import com.tencent.TIMMessageListener;
@@ -33,11 +37,12 @@ import java.util.List;
 
 public class IMChatPresenter extends IIMChatPresenter implements TIMMessageListener {
 
-    private final static String TAG = IMChatPresenter.class.getSimpleName();
+    private final static String TAG = "IMChatPresenter------";
     private String mRoomId;
 
     private TIMConversation mGroupConversation;
     private IIMChatView mIMChatView;
+    private Gson mGson = new Gson();
 
     public IMChatPresenter(IIMChatView baseView) {
         super(baseView);
@@ -102,15 +107,16 @@ public class IMChatPresenter extends IIMChatPresenter implements TIMMessageListe
 
     @Override
     public void deleteGroup() {
+        sendMessage(Constants.AVIMCMD_LIVE_END, "");
         TIMGroupManager.getInstance().deleteGroup(mRoomId, new TIMCallBack() {
             @Override
             public void onError(int code, String msg) {
-                Log.i(TAG, String.format("delete group error code = %d,msg = %s", code, msg));
+                Log.e(TAG, String.format("delete group error code = %d,msg = %s", code, msg));
             }
 
             @Override
             public void onSuccess() {
-                Log.i(TAG, "delete group success");
+                Log.e(TAG, "delete group success");
                 finish();
             }
         });
@@ -121,12 +127,12 @@ public class IMChatPresenter extends IIMChatPresenter implements TIMMessageListe
         TIMGroupManager.getInstance().applyJoinGroup(roomId, "", new TIMCallBack() {
             @Override
             public void onError(int code, String msg) {
-                Log.i(TAG, String.format("join group error code = %d,msg = %s", code, msg));
+                Log.e(TAG, String.format("join group error code = %d,msg = %s", code, msg));
             }
 
             @Override
             public void onSuccess() {
-                Log.i(TAG, "join group success");
+                Log.e(TAG, "join group success");
                 mGroupConversation = TIMManager.getInstance().getConversation(TIMConversationType.Group, mRoomId);
                 TIMManager.getInstance().addMessageListener(IMChatPresenter.this);
                 mIMChatView.onJoinGroupResult(0, mRoomId);
@@ -137,15 +143,16 @@ public class IMChatPresenter extends IIMChatPresenter implements TIMMessageListe
 
     @Override
     public void quitGroup(String roomId) {
+        sendMessage(Constants.AVIMCMD_EXIT_LIVE, "");
         TIMGroupManager.getInstance().quitGroup(roomId, new TIMCallBack() {
             @Override
             public void onError(int code, String msg) {
-                Log.i(TAG, String.format("quit group error code = %d,msg = %s", code, msg));
+                Log.e(TAG, String.format("quit group error code = %d,msg = %s", code, msg));
             }
 
             @Override
             public void onSuccess() {
-                Log.i(TAG, "quit group success");
+                Log.e(TAG, "quit group success");
                 finish();
             }
         });
@@ -153,6 +160,7 @@ public class IMChatPresenter extends IIMChatPresenter implements TIMMessageListe
 
     @Override
     public void sendTextMsg(final String msg) {
+        Log.e(TAG, "-----1-----"+msg);
         sendMessage(Constants.AVIMCMD_TEXT_TYPE, msg);
     }
 
@@ -166,19 +174,35 @@ public class IMChatPresenter extends IIMChatPresenter implements TIMMessageListe
         sendMessage(Constants.AVIMCMD_PRAISE_FIRST, null);
     }
 
+
+    public void sendGiftMessage(String msg) {
+        sendMessage(Constants.AVIMCMD_GIFT, msg);
+    }
+
     @Override
     public boolean onNewMessages(List<TIMMessage> list) {
+        Log.e(TAG, "-----5-----");
         parserMessage(list);
         return false;
     }
 
     private void parserMessage(List<TIMMessage> list) {
         for (TIMMessage msg : list) {
+            Log.e(TAG, "-----6-----");
             TIMElem elem = msg.getElement(0);
             if (elem.getType() == TIMElemType.Text) {
+                Log.e(TAG, "-----7-----");
                 TIMTextElem text = (TIMTextElem) elem;
                 handleCustomTextMsg(text.getText());
-                Log.i(TAG, "onNewMessages: msg = " + text.getText());
+                Log.e(TAG, "onNewMessages: msg = " + text.getText());
+            }else if (elem.getType() == TIMElemType.GroupSystem) {
+                TIMGroupSystemElem systemElem = (TIMGroupSystemElem) elem;
+                Log.i(TAG, "parserMessage: group msg");
+                if (systemElem.getSubtype() == TIMGroupSystemElemType.TIM_GROUP_SYSTEM_DELETE_GROUP_TYPE) {
+                    Log.i(TAG, "parserMessage: delete group msg");
+                    //观众 退出直播观看
+                    mIMChatView.onGroupDeleteResult();
+                }
             }
         }
     }
@@ -214,13 +238,34 @@ public class IMChatPresenter extends IIMChatPresenter implements TIMMessageListe
                 case Constants.AVIMCMD_PRAISE:
                     mIMChatView.handlePraiseMsg(new SimpleUserInfo(userId, nickname, headPic));
                     break;
+                case Constants.AVIMCMD_ENTER_LIVE:
+                    mIMChatView.handleEnterLiveMsg(new SimpleUserInfo(userId, nickname, headPic));
+                    break;
+                case Constants.AVIMCMD_EXIT_LIVE:
+                    mIMChatView.handleExitLiveMsg(new SimpleUserInfo(userId, nickname, headPic));
+                    break;
+                case Constants.AVIMCMD_HOST_LEAVE:
+                    Log.i(TAG, "handleCustomTextMsg: AVIMCMD_HOST_LEAVE");
+                    break;
+                case Constants.AVIMCMD_HOST_BACK:
+                    Log.i(TAG, "handleCustomTextMsg: AVIMCMD_HOST_BACK");
+                    break;
+                case Constants.AVIMCMD_LIVE_END:
+                    Log.i(TAG, "handleCustomTextMsg: AVIMCMD_LIVE_END");
+                    mIMChatView.handleExitLiveMsg(new SimpleUserInfo(userId, nickname, headPic));
+                    break;
+                case Constants.AVIMCMD_GIFT:
+                    GiftWithUerInfo giftWithUerInfo = mGson.fromJson(jsonObject.getString("params"), GiftWithUerInfo.class);
+                    mIMChatView.handleGift(giftWithUerInfo);
+                    break;
             }
         } catch (JSONException e) {
+            Log.e(TAG, "-----8-----");
             e.printStackTrace();
         }
     }
 
-    private void sendMessage(int userAction, String msg) {
+    public void sendMessage(int userAction, String msg) {
         JSONObject json = new JSONObject();
         try {
             json.put("userAction", userAction);
@@ -240,15 +285,16 @@ public class IMChatPresenter extends IIMChatPresenter implements TIMMessageListe
         if (message.addElement(textElem) != 0) {
             return;
         }
+        Log.e(TAG, "-----2-----"+jsonMsg);
         sendTIMMessage(message, new TIMValueCallBack() {
             @Override
             public void onError(int code, String msg) {
-                Log.i(TAG, String.format("send message onError: code = %d,msg = %s", code, msg));
+                Log.e(TAG, "-----3-----"+msg);
             }
 
             @Override
             public void onSuccess(Object o) {
-                Log.i(TAG, "send message onSuccess: ");
+                Log.e(TAG, "-----4-----");
             }
         });
     }

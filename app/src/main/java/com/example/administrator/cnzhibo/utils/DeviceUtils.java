@@ -7,6 +7,9 @@ import android.content.pm.PackageManager;
 
 /**
  * @description: 设备工具
+ *
+ * @author: Andruby
+ * @time: 2016/12/21 10:49
  */
 public class DeviceUtils {
 
@@ -22,4 +25,9 @@ public class DeviceUtils {
         }
         return version;
     }
+    public static int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
 }
